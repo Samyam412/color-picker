@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import randomColorGenerator from "../../utils/randomColor";
 
-function roundStart(): string[] {
+function generateColorArray(): string[] {
   const color: string[] = [];
   for (let i = 0; i < 3; ++i) {
     const hex = randomColorGenerator();
@@ -10,38 +10,45 @@ function roundStart(): string[] {
   return color;
 }
 
-const ColorPicker = () => {
-  const hexArr = roundStart();
-  const [color, setColor] = useState(hexArr);
-  const [currentColor, setCurrentColor] = useState<string>(
-    hexArr[Math.floor(Math.random() * 3)],
-  );
-  const [answer, setAnswer] = useState(currentColor);
-  const [input, setInput] = useState<string | undefined>(undefined);
+interface Tround {
+  color: string[];
+  answer: string;
+}
+function roundStart(): Tround {
+  const color = generateColorArray();
+  const answer = color[Math.floor(Math.random() * 3)];
+  return { color: color, answer: answer };
+}
 
-  const handleColorChange = ({ color }: { color: string }) => {
-    const randomNum = Math.floor(Math.random() * 3);
-    const ran = hexArr[randomNum];
-    setColor(hexArr);
-    setCurrentColor(ran);
-    setAnswer(currentColor);
+const ColorPicker = () => {
+  const [round, setRound] = useState<Tround>(roundStart());
+  const [input, setInput] = useState<string | undefined>(undefined);
+  const [result, setResult] = useState<string | undefined>(undefined);
+
+  const handleColorChange = (color: string) => {
+    if (round.answer === color) {
+      setResult("Correct");
+    } else {
+      setResult("Incorrect");
+    }
     setInput(color);
+    setRound(roundStart());
   };
 
   return (
     <div className="bg-slate-300 h-screen flex justify-center items-center flex-col gap-10">
       <div className="size-96 border flex justify-center items-center  flex-col rounded-xl p-8 ">
         <div
-          style={{ backgroundColor: currentColor }}
+          style={{ backgroundColor: round.answer }}
           className="size-8/9 rounded-lg"
         ></div>
       </div>
       <div className="border  w-96 rounded-xl flex justify-center items-center gap-4 p-4">
         <div className="w-full flex justify-center items-center gap-6 text-white text-center rounded-md">
-          {color.map((color) => {
+          {round.color.map((color) => {
             return (
               <h1
-                onClick={() => handleColorChange({ color: color })}
+                onClick={() => handleColorChange(color)}
                 className=" bg-amber-500 w-full rounded-md p-2 cursor-pointer"
                 key={color}
               >
@@ -51,17 +58,15 @@ const ColorPicker = () => {
           })}
         </div>
       </div>
-      <Result answer={answer} input={input} />
+      <Result result={result} />
     </div>
   );
 };
 
-const Result = ({ answer, input }: { answer: string; input?: string }) => {
-  const outcome = input ? (input === answer ? "success" : "fail") : undefined;
+const Result = ({ result }: { result?: string }) => {
   return (
     <div>
-      <h1>answer-{answer}</h1>
-      <div>result: {outcome ?? "Pick a color"}</div>
+      <div>{result ?? "Pick a color"}</div>
     </div>
   );
 };
