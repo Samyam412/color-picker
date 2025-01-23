@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import randomColorGenerator from "../../utils/randomColor";
+import Background from "./background";
 
 function generateColorArray(): string[] {
   const color: string[] = [];
@@ -22,7 +23,6 @@ function roundStart(): Tround {
 
 const ColorPicker = () => {
   const [round, setRound] = useState<Tround>(roundStart());
-  const [input, setInput] = useState<string | undefined>(undefined);
   const [result, setResult] = useState<string | undefined>(undefined);
 
   const handleColorChange = (color: string) => {
@@ -31,19 +31,21 @@ const ColorPicker = () => {
     } else {
       setResult("Incorrect");
     }
-    setInput(color);
     setRound(roundStart());
   };
 
   return (
-    <div className="bg-slate-300 h-screen flex justify-center items-center flex-col gap-10">
-      <div className="size-96 border flex justify-center items-center  flex-col rounded-xl p-8 ">
+    <div className="relative h-screen flex justify-center items-center flex-col gap-10">
+      <div className="absolute inset-0 w-full h-full -z-10">
+        <Background />
+      </div>
+      <div className="size-96 border backdrop-blur-xl  flex justify-center items-center  flex-col rounded-xl p-8 ">
         <div
           style={{ backgroundColor: round.answer }}
           className="size-8/9 rounded-lg"
         ></div>
       </div>
-      <div className="border  w-96 rounded-xl flex flex-col justify-center items-center gap-4 p-4">
+      <div className="border  w-96 rounded-xl backdrop-blur-xl flex flex-col justify-center items-center gap-4 p-4">
         <div className="w-full flex justify-center items-center gap-6 text-white text-center rounded-md">
           {round.color.map((color) => {
             return (
@@ -66,7 +68,7 @@ const ColorPicker = () => {
 const Result = ({ result }: { result?: string }) => {
   return (
     <div
-      className={`${result ? (result === "Incorrect" ? "bg-rose-800" : "bg-green-600") : "bg-slate-800"} border text-white border-amber-500 w-full p-5 text-center`}
+      className={`${result ? (result === "Incorrect" ? "bg-rose-800" : "bg-green-600") : "bg-slate-800"} rounded-sm text-white w-full p-5 text-center`}
     >
       {result ?? "Pick a color"}
     </div>
