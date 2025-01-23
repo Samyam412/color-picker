@@ -1,15 +1,6 @@
 import { useState } from "react";
-import randomColorGenerator from "../../utils/randomColor";
 import Background from "./background";
-
-function generateColorArray(): string[] {
-  const color: string[] = [];
-  for (let i = 0; i < 3; ++i) {
-    const hex = randomColorGenerator();
-    color.push(hex);
-  }
-  return color;
-}
+import generateColorArray from "../../utils/randomColor";
 
 interface Tround {
   color: string[];
