@@ -43,7 +43,7 @@ const ColorPicker = () => {
           className="size-8/9 rounded-lg"
         ></div>
       </div>
-      <div className="border  w-96 rounded-xl flex justify-center items-center gap-4 p-4">
+      <div className="border  w-96 rounded-xl flex flex-col justify-center items-center gap-4 p-4">
         <div className="w-full flex justify-center items-center gap-6 text-white text-center rounded-md">
           {round.color.map((color) => {
             return (
@@ -57,16 +57,18 @@ const ColorPicker = () => {
             );
           })}
         </div>
+        <Result result={result} />
       </div>
-      <Result result={result} />
     </div>
   );
 };
 
 const Result = ({ result }: { result?: string }) => {
   return (
-    <div>
-      <div>{result ?? "Pick a color"}</div>
+    <div
+      className={`${result ? (result === "Incorrect" ? "bg-rose-800" : "bg-green-600") : "bg-slate-800"} border text-white border-amber-500 w-full p-5 text-center`}
+    >
+      {result ?? "Pick a color"}
     </div>
   );
 };
